@@ -30,8 +30,8 @@ Describe "PC Toolkit - estructura del proyecto" {
 
     It "contiene los scripts esperados" {
         $scripts = Get-ChildItem $scriptsDir -Filter *.ps1
-        $scripts.Count | Should -Be 6
-        @('Health-Check.ps1','Clean-Caches.ps1','Optimize-Gaming.ps1','Monitor-GPU.ps1','Benchmark.ps1','Gui.ps1') | ForEach-Object {
+        $scripts.Count | Should -Be 7
+        @('Health-Check.ps1','Clean-Caches.ps1','Optimize-Gaming.ps1','Monitor-GPU.ps1','Benchmark.ps1','Gui.ps1','Game-Mode.ps1') | ForEach-Object {
             Test-Path (Join-Path $scriptsDir $_) | Should -Be $true
         }
     }
@@ -96,5 +96,12 @@ Describe "PC Toolkit - calidad y seguridad del codigo" {
     It "Clean-Caches pide confirmacion antes de borrar" {
         $content = Get-Content (Join-Path $scriptsDir 'Clean-Caches.ps1') -Raw
         $content | Should -Match 'Read-Host'
+    }
+
+    It "Game-Mode solo detiene procesos de una lista blanca" {
+        $content = Get-Content (Join-Path $scriptsDir 'Game-Mode.ps1') -Raw
+        $content | Should -Match '\$Targets' -Because "el modo juego debe usar una lista blanca explicita"
+        $content | Should -Not -Match 'Get-Process \|\s*Stop-Process' -Because "nunca debe matar todos los procesos"
+        $content | Should -Not -Match 'Stop-Process -Name \*' -Because "nunca debe usar comodines al matar"
     }
 }

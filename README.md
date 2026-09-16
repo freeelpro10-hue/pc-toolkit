@@ -17,7 +17,8 @@ Nació de un caso real: un i5-8400 + GTX 1660 SUPER con 49 GB libres que termin�
 | `scripts/Optimize-Gaming.ps1` | Game Mode, Game DVR off, GPU dedicada por juego, plan de energía |
 | `scripts/Monitor-GPU.ps1` | Log en CSV del estado de GPU cada 5 s durante una partida |
 | `scripts/Benchmark.ps1` | Mini benchmark: CPU, RAM, disco, estado de GPU |
-| `scripts/Gui.ps1` | **Interfaz grafica** (WPF): todos los tools con consola integrada |
+| `scripts/Game-Mode.ps1` | Libera RAM/VRAM cerrando IA local y wallpaper (lista blanca, con `-Restore`) |
+| `scripts/Gui.ps1` | **Interfaz gráfica** (WPF): todos los tools con consola integrada |
 
 ## Uso rápido
 
@@ -34,6 +35,12 @@ Nació de un caso real: un i5-8400 + GTX 1660 SUPER con 49 GB libres que termin�
 # Optimizar para juegos (aplica ajustes reversibles)
 .\scripts\Optimize-Gaming.ps1 -GamePath "C:\ruta\al\juego.exe"
 
+# Antes de jugar: cierra LM Studio / Bionic / Ollama / Wallpaper Engine
+.\scripts\Game-Mode.ps1
+
+# Después de jugar: los relanza
+.\scripts\Game-Mode.ps1 -Restore
+
 # Monitorear GPU mientras jugás
 .\scripts\Monitor-GPU.ps1
 ```
@@ -45,7 +52,7 @@ Nació de un caso real: un i5-8400 + GTX 1660 SUPER con 49 GB libres que termin�
 
 Además de los scripts de consola, el kit incluye una app de escritorio nativa (WPF, sin dependencias externas):
 
-- Botones para las 5 herramientas, con consola de salida integrada
+- Botones para las 6 herramientas, con consola de salida integrada
 - Selector de ejecutable para la optimización por-juego
 - Confirmación con diálogo antes de borrar cachés
 - Operaciones en segundo plano: la ventana nunca se congela
@@ -55,30 +62,7 @@ Además de los scripts de consola, el kit incluye una app de escritorio nativa (
 
 ```
 pc-toolkit/
-├── scripts/          # 5 herramientas + interfaz gráfica (Gui.ps1 + Gui.xaml)
-├── tests/            # Suite de tests Pester (Pester 5)
-└── .github/          # CI con GitHub Actions
-```
-
-## Interfaz grafica
-
-Ademas de los scripts de consola, el kit incluye una app de escritorio nativa (WPF, sin dependencias externas):
-
-```powershell
-.\scripts\Gui.ps1
-```
-
-- Botones para las 5 herramientas, con consola de salida integrada
-- Selector de ejecutable para la optimizacion por-juego
-- Confirmacion con dialogo antes de borrar caches
-- Operaciones en segundo plano: la ventana nunca se congela
-- Las corridas se validan en CI mediante `Gui.ps1 -SelfTest`
-
-## Estructura
-
-```
-pc-toolkit/
-├── scripts/          # 5 herramientas + interfaz grafica (Gui.ps1 + Gui.xaml)
+├── scripts/          # 6 herramientas + interfaz gráfica (Gui.ps1 + Gui.xaml)
 ├── tests/            # Suite de tests Pester (Pester 5)
 └── .github/          # CI con GitHub Actions
 ```
@@ -92,7 +76,7 @@ Install-Module Pester -MinimumVersion 5.5.0 -Scope CurrentUser -SkipPublisherChe
 Invoke-Pester -Path tests
 ```
 
-La suite valida: sintaxis de los scripts, documentación mínima, ausencia de URLs/IPs/descargas (el kit no se conecta a internet), ausencia de secretos, y que las operaciones destructivas pidan confirmación.
+La suite valida: sintaxis de los scripts, documentación mínima, ausencia de URLs/IPs/descargas (el kit no se conecta a internet), ausencia de secretos, que las operaciones destructivas pidan confirmación y que Game-Mode solo use lista blanca de procesos.
 
 ## Principios
 

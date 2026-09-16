@@ -17,10 +17,14 @@ Nació de un caso real: un i5-8400 + GTX 1660 SUPER con 49 GB libres que termin�
 | `scripts/Optimize-Gaming.ps1` | Game Mode, Game DVR off, GPU dedicada por juego, plan de energía |
 | `scripts/Monitor-GPU.ps1` | Log en CSV del estado de GPU cada 5 s durante una partida |
 | `scripts/Benchmark.ps1` | Mini benchmark: CPU, RAM, disco, estado de GPU |
+| `scripts/Gui.ps1` | **Interfaz grafica** (WPF): todos los tools con consola integrada |
 
 ## Uso rápido
 
 ```powershell
+# Interfaz gráfica (recomendado)
+.\scripts\Gui.ps1
+
 # Chequeo de salud
 .\scripts\Health-Check.ps1
 
@@ -37,11 +41,44 @@ Nació de un caso real: un i5-8400 + GTX 1660 SUPER con 49 GB libres que termin�
 > Todos los scripts requieren PowerShell 5.1+ (incluido en Windows 10/11).
 > Los cambios que hacen son reversibles y están comentados en el código.
 
+## Interfaz gráfica
+
+Además de los scripts de consola, el kit incluye una app de escritorio nativa (WPF, sin dependencias externas):
+
+- Botones para las 5 herramientas, con consola de salida integrada
+- Selector de ejecutable para la optimización por-juego
+- Confirmación con diálogo antes de borrar cachés
+- Operaciones en segundo plano: la ventana nunca se congela
+- Las corridas se validan en CI mediante `Gui.ps1 -SelfTest`
+
 ## Estructura
 
 ```
 pc-toolkit/
-├── scripts/          # Los 5 scripts del kit
+├── scripts/          # 5 herramientas + interfaz gráfica (Gui.ps1 + Gui.xaml)
+├── tests/            # Suite de tests Pester (Pester 5)
+└── .github/          # CI con GitHub Actions
+```
+
+## Interfaz grafica
+
+Ademas de los scripts de consola, el kit incluye una app de escritorio nativa (WPF, sin dependencias externas):
+
+```powershell
+.\scripts\Gui.ps1
+```
+
+- Botones para las 5 herramientas, con consola de salida integrada
+- Selector de ejecutable para la optimizacion por-juego
+- Confirmacion con dialogo antes de borrar caches
+- Operaciones en segundo plano: la ventana nunca se congela
+- Las corridas se validan en CI mediante `Gui.ps1 -SelfTest`
+
+## Estructura
+
+```
+pc-toolkit/
+├── scripts/          # 5 herramientas + interfaz grafica (Gui.ps1 + Gui.xaml)
 ├── tests/            # Suite de tests Pester (Pester 5)
 └── .github/          # CI con GitHub Actions
 ```

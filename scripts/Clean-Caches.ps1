@@ -7,7 +7,10 @@
     NO toca documentos, juegos ni archivos personales.
 #>
 [CmdletBinding(SupportsShouldProcess)]
-param()
+param(
+    # Usada por la GUI: salta la confirmacion interactiva (la GUI ya confirmo con dialogo)
+    [switch]$AutoConfirm
+)
 
 $ErrorActionPreference = 'SilentlyContinue'
 
@@ -49,7 +52,11 @@ if ($cleanable.Count -eq 0) {
 
 Write-Host ("`nTotal liberable: {0:N2} GB" -f $totalGB) -ForegroundColor Cyan
 
-$answer = Read-Host "Borrar estos caches? (s/N)"
+if ($AutoConfirm) {
+    $answer = 's'
+} else {
+    $answer = Read-Host "Borrar estos caches? (s/N)"
+}
 if ($answer -notmatch '^[sS]') {
     Write-Host "Cancelado. No se borro nada." -ForegroundColor Yellow
     return

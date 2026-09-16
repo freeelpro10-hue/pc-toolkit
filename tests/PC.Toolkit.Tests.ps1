@@ -28,12 +28,21 @@ Describe "PC Toolkit - estructura del proyecto" {
         Test-Path (Join-Path $projectRoot '.gitignore') | Should -Be $true
     }
 
-    It "contiene los 5 scripts esperados" {
+    It "contiene los scripts esperados" {
         $scripts = Get-ChildItem $scriptsDir -Filter *.ps1
-        $scripts.Count | Should -Be 5
-        @('Health-Check.ps1','Clean-Caches.ps1','Optimize-Gaming.ps1','Monitor-GPU.ps1','Benchmark.ps1') | ForEach-Object {
+        $scripts.Count | Should -Be 6
+        @('Health-Check.ps1','Clean-Caches.ps1','Optimize-Gaming.ps1','Monitor-GPU.ps1','Benchmark.ps1','Gui.ps1') | ForEach-Object {
             Test-Path (Join-Path $scriptsDir $_) | Should -Be $true
         }
+    }
+
+    It "la GUI tiene su XAML junto al script" {
+        Test-Path (Join-Path $scriptsDir 'Gui.xaml') | Should -Be $true
+    }
+
+    It "la GUI pasa su SelfTest (XAML y controles validos)" {
+        $out = & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $scriptsDir 'Gui.ps1') -SelfTest
+        ($out -join "`n") | Should -Match 'SelfTest OK'
     }
 }
 

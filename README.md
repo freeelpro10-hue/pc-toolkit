@@ -1,5 +1,7 @@
 # PC Toolkit
 
+[![CI](https://github.com/freeelpro10-hue/pc-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/freeelpro10-hue/pc-toolkit/actions/workflows/ci.yml)
+
 Kit de herramientas en PowerShell para diagnosticar, limpiar y optimizar PCs con Windows, pensado para jugadores.
 
 ## ¿Por qué este proyecto?
@@ -35,8 +37,32 @@ Nació de un caso real: un i5-8400 + GTX 1660 SUPER con 49 GB libres que termin�
 > Todos los scripts requieren PowerShell 5.1+ (incluido en Windows 10/11).
 > Los cambios que hacen son reversibles y están comentados en el código.
 
+## Estructura
+
+```
+pc-toolkit/
+├── scripts/          # Los 5 scripts del kit
+├── tests/            # Suite de tests Pester (Pester 5)
+└── .github/          # CI con GitHub Actions
+```
+
+## Tests y CI
+
+El proyecto se valida automáticamente en cada push (GitHub Actions, runner Windows) y podés correr los tests localmente con Pester 5:
+
+```powershell
+Install-Module Pester -MinimumVersion 5.5.0 -Scope CurrentUser -SkipPublisherCheck
+Invoke-Pester -Path tests
+```
+
+La suite valida: sintaxis de los scripts, documentación mínima, ausencia de URLs/IPs/descargas (el kit no se conecta a internet), ausencia de secretos, y que las operaciones destructivas pidan confirmación.
+
 ## Principios
 
 1. **Nada destructivo sin confirmación** — cada borrado pide permiso o soporta `-WhatIf`
 2. **Reversible** — cada ajuste indica cómo deshacerlo en comentarios
 3. **Transparente** — imprime qué hace y por qué, sin ocultar nada
+
+## Licencia
+
+[MIT](LICENSE)

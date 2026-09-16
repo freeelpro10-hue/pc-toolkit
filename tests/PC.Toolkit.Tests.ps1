@@ -42,6 +42,7 @@ Describe "PC Toolkit - calidad y seguridad del codigo" {
     BeforeAll {
         $projectRoot = Split-Path $PSCommandPath -Parent | Split-Path -Parent
         $scripts = Get-ChildItem (Join-Path $projectRoot 'scripts') -Filter *.ps1
+        $scriptsDir = Join-Path $projectRoot 'scripts'
     }
 
     It "todos los scripts tienen sintaxis valida" {

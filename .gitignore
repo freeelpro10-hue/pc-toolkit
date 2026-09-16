@@ -1,0 +1,9 @@
+# Logs generados
+gpu_log.csv
+*.log
+
+# Archivos temporales del benchmark
+*.bin
+
+# Configuracion local del usuario
+config.local.ps1

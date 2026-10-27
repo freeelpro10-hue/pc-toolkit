@@ -51,11 +51,18 @@ Write-Host "`n[CPU]" -ForegroundColor Yellow
 
 # --- Procesos pesados ---
 Write-Host "`n[Top 10 procesos por RAM]" -ForegroundColor Yellow
-Get-Process | Group-Object Name | ForEach-Object {
+# Optimizacion: Usar hash tables en lugar de Group-Object reduce el tiempo de O(n^2) a O(n)
+$ram = @{}
+$inst = @{}
+foreach ($p in Get-Process) {
+    $ram[$p.Name] += $p.WorkingSet64
+    $inst[$p.Name]++
+}
+$ram.GetEnumerator() | ForEach-Object {
     [PSCustomObject]@{
-        Proceso    = $_.Name
-        RAM_MB     = [math]::Round(($_.Group | Measure-Object WorkingSet64 -Sum).Sum / 1MB, 0)
-        Instancias = $_.Count
+        Proceso    = $_.Key
+        RAM_MB     = [math]::Round($_.Value / 1MB, 0)
+        Instancias = $inst[$_.Key]
     }
 } | Sort-Object RAM_MB -Descending | Select-Object -First 10 | Format-Table -AutoSize
 

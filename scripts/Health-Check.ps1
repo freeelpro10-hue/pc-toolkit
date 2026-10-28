@@ -51,13 +51,21 @@ Write-Host "`n[CPU]" -ForegroundColor Yellow
 
 # --- Procesos pesados ---
 Write-Host "`n[Top 10 procesos por RAM]" -ForegroundColor Yellow
-Get-Process | Group-Object Name | ForEach-Object {
+# ⚡ Bolt: Pipeline replaced with hashtable accumulation to skip Group-Object and Measure-Object overhead
+$ram = @{}
+$count = @{}
+foreach ($p in Get-Process) {
+    $ram[$p.Name] += $p.WorkingSet64
+    $count[$p.Name] += 1
+}
+$res = foreach ($k in $ram.Keys) {
     [PSCustomObject]@{
-        Proceso    = $_.Name
-        RAM_MB     = [math]::Round(($_.Group | Measure-Object WorkingSet64 -Sum).Sum / 1MB, 0)
-        Instancias = $_.Count
+        Proceso    = $k
+        RAM_MB     = [math]::Round($ram[$k] / 1MB, 0)
+        Instancias = $count[$k]
     }
-} | Sort-Object RAM_MB -Descending | Select-Object -First 10 | Format-Table -AutoSize
+}
+$res | Sort-Object RAM_MB -Descending | Select-Object -First 10 | Format-Table -AutoSize
 
 # --- Uptime ---
 $up = (Get-Date) - $os.LastBootUpTime

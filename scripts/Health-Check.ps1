@@ -51,11 +51,19 @@ Write-Host "`n[CPU]" -ForegroundColor Yellow
 
 # --- Procesos pesados ---
 Write-Host "`n[Top 10 procesos por RAM]" -ForegroundColor Yellow
-Get-Process | Group-Object Name | ForEach-Object {
+# OPTIMIZATION: Replaced Group-Object/Measure-Object pipeline with foreach and hashtables.
+# This prevents the creation of intermediate GroupInfo objects and is measurably faster (O(n) pass).
+$procHash = @{}
+$procCount = @{}
+foreach ($p in Get-Process) {
+    $procHash[$p.Name] += $p.WorkingSet64
+    $procCount[$p.Name]++
+}
+$procHash.Keys | ForEach-Object {
     [PSCustomObject]@{
-        Proceso    = $_.Name
-        RAM_MB     = [math]::Round(($_.Group | Measure-Object WorkingSet64 -Sum).Sum / 1MB, 0)
-        Instancias = $_.Count
+        Proceso    = $_
+        RAM_MB     = [math]::Round($procHash[$_] / 1MB, 0)
+        Instancias = $procCount[$_]
     }
 } | Sort-Object RAM_MB -Descending | Select-Object -First 10 | Format-Table -AutoSize
 

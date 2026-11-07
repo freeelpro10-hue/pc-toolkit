@@ -1,0 +1,3 @@
+## 2023-11-07 - Replace PowerShell Pipeline Aggregation with Hashtables
+**Learning:** In PowerShell, using `Group-Object` followed by `Measure-Object` in a pipeline is a significant performance anti-pattern. While readable, it creates significant overhead by instantiating objects at each step. Using a `foreach` loop with hashtables for accumulation reduces overhead and is much faster (a 10x improvement, 311ms vs 31ms).
+**Action:** Always prefer `foreach` loops with hashtable accumulation for grouping and summing data in PowerShell over pipeline grouping/measuring, especially on collections like processes or file operations.
